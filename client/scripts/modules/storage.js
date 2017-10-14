@@ -1,6 +1,10 @@
+'use strict';
+
 function BabbleStorage() {
-    const KEY = "Babble";
-    const DEFAULT_DATA = JSON.stringify({currentMessage: "", userInfo: new UserInfo("", "").getUser()});
+    const KEY = "babble";
+    const DEFAULT_DATA = JSON.stringify({currentMessage: "", userInfo: new UserInfo("", "").toJson()});
+    localStorage.clear();
+    localStorage.setItem(KEY,DEFAULT_DATA);
 
     this.setData = function (data) {
         localStorage.setItem(KEY, JSON.stringify(data));

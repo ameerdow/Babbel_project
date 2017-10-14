@@ -1,30 +1,80 @@
+<!DOCTYPE html>
 <html>
-
 <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Vegans - Babble</title>
     <link rel="stylesheet" type="text/css" href="styles/main.css">
+    <link rel="stylesheet" type="text/css" href="styles/main-tablet.css">
+    <link rel="stylesheet" type="text/css" href="styles/main-mobile.css">
 </head>
 
-<body class="body">
-    <div class="header-top">
-        <img src="Images/Logo.png" class="logo-header">
-    </div>
-    <div class="siderbar-left">
-    </div>
 
-    <div class="chat-room">
-        <div>
-            
+<body>
+<header>
+    <img alt="Vegans - Babble" src="images/Logo.png"/>
+</header>
+
+<div class="page">
+    <nav></nav>
+    <main>
+        <div class="chat-room">
+            <header>
+                <h1>Vegans</h1>
+                <dl class="chat-status">
+                    <dt>
+                        <img src="images/Message.png" width="24" height="24" alt="Number of messages"/>
+                        <span id="numberOfMessages">0</span>
+                    </dt>
+                    <dd>
+                        <img src="images/User.png" width="24" height="24" alt="Number of users"/>
+                        <span id="numberOfUsers">0</span>
+                    </dd>
+                </dl>
+            </header>
+            <main>
+                <ol id="chatMessages">
+
+                </ol>
+            </main>
+
+            <footer>
+                <form onsubmit="submitNewMessage(event, this)">
+                    <textarea name="message" rows="1" onkeyup="calculateTextareaHeight(event,this, 300);"></textarea>
+                    <button id="newMessageButton" aria-label="Send" type="submit">
+                        <img src="images/Send.png" alt="" width="60" height="60"/>
+                    </button>
+                </form>
+            </footer>
         </div>
-        <label class="send-area" type="text"><textarea id="textArea" class="text-area"></textarea>
-        <div class="send-button" onclick="postMessage()">
-            <img src="Images/Send.png"/>
-        </div>
-        </label>
-    
+    </main>
+</div>
+<div id="login" class="modal">
+    <div class="modal-content">
+        <h2>Who are you?</h2>
+        <table class="login-table">
+            <tr>
+                <td width="80"><label for="name">Full name:</label></td>
+                <td><input id="name" type="text" name="name"/></td>
+            </tr>
+            <tr>
+                <td width="80"><label for="email">Email:</label></td>
+                <td><input id="email" type="text" name="email"/></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td class="align-right">
+                    <button class="login-anonymous-button" onclick="loginAnonymously()">Stay Anonymous</button>
+                    <button class="login-button" onclick="loginWithNameAndEmail()">Save</button>
+                </td>
+            </tr>
+        </table>
     </div>
-    <script src="scripts/modules/message.js"></script>
-    <script src="scripts/modules/userInfo.js"></script>
-    <script src="scripts/main.js"></script>
+</div>
+
+<script src="scripts/modules/storage.js"></script>
+<script src="scripts/modules/message.js"></script>
+<script src="scripts/modules/userInfo.js"></script>
+<script src="scripts/main.js"></script>
 </body>
 </html>

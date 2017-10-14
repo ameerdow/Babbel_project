@@ -4,12 +4,6 @@ const messageUtils = require("./messages-util");
 const md5 = require("md5");
 var bodyParser = require('body-parser');
 
-function setDefaultHeaders(request) {
-    request.header('Access-Control-Allow-Origin', '*');
-    request.header('Access-Control-Allow-Methods', 'GET, POST, DELETE');
-    request.header('Access-Control-Allow-Headers', 'Content-Type');
-    request.header('Content-Type', 'application/json');
-}
 
 // client side
 var app = express();
@@ -30,13 +24,19 @@ console.log("client side test port 8081");
 app = express();
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({extended: true})); // support encoded bodies
+app.all("*", function (request, response, next) {
+    response.header('Access-Control-Allow-Origin', '*');
+    response.header('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
+    response.header('Access-Control-Allow-Headers', 'Content-Type');
+    response.header('Content-Type', 'application/json');
+    next();
+});
 
 let waitingClients = [];
 let users = [];
 let anonymousIds = 0;
 
 app.post("/register", function (request, response) {
-    setDefaultHeaders(request);
     if (request.body.name === null) {
         response.status(400).send("missing [message].[name]");
         return;
@@ -67,12 +67,11 @@ app.post("/register", function (request, response) {
     response.status(200).send(JSON.stringify(newUser));
 });
 app.post("/messages", function (request, response) {
-    setDefaultHeaders(request);
-    if (request.body.name === null || request.body.name.length === 0) {
+    if (request.body.name === null) {
         response.status(400).send("missing [message].[name]");
         return;
     }
-    if (request.body.email === null || request.body.email.length === 0) {
+    if (request.body.email === null) {
         response.status(400).send("missing [message].[email]");
         return;
     }
@@ -86,6 +85,9 @@ app.post("/messages", function (request, response) {
     }
 
     let newMsg = messageUtils.addMessage(request.body);
+
+    newMsg.id = messageUtils.generateNewId();
+
     response.status(200).send(newMsg);
 
     for (let i = 0; i < waitingClients.length; i++) {
@@ -94,7 +96,6 @@ app.post("/messages", function (request, response) {
     waitingClients = [];
 });
 app.get("/messages", function (request, response) {
-    setDefaultHeaders(request);
 
     if (request.query.counter === null || isNaN(Number(request.query.counter))) {
         response.status(400).send("missing integer counter parameter");
@@ -110,22 +111,19 @@ app.get("/messages", function (request, response) {
     response.status(200).send(JSON.stringify(messages));
 });
 app.get("/stats", function (request, response) {
-    setDefaultHeaders(request);
     response.status(200).send(JSON.stringify({
         messages: messageUtils.messages.length,
         users: users.length
     }));
 });
 app.delete("/messages/:id", function (request, response) {
-    setDefaultHeaders(request);
     if (request.params.id === null || isNaN(Number(request.params.id))) {
         response.status(400).send("missing integer message id parameter");
         return;
     }
-    response.status(200).send(JSON.stringify(messageUtils.deleteMessage(request.params.id)));
+    response.status(200).send(JSON.stringify(messageUtils.deleteMessage(Number(request.params.id))));
 });
 app.get("/gravatar/:email", function (request, response) {
-    setDefaultHeaders(request);
 
     let imgUrl = "https://www.gravatar.com/avatar/" + md5(request.params.email) + "?s=60&d=identicon";
     requestUtil.get(imgUrl, function (error, res, body) {

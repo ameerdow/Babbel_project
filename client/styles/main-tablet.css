@@ -1,0 +1,15 @@
+@media (max-width: 638px) {
+    /* Mobile 320-638 */
+    body > header {
+        height: 80px;
+    }
+
+    body > header > img {
+        height: calc(100% - 24px);
+        padding: 12px;
+    }
+
+    nav {
+        display: none;
+    }
+}
