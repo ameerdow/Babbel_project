@@ -1,0 +1,27 @@
+{
+  "name": "babble",
+  "version": "1.0.0",
+  "description": "University Client-Side project",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "start": "node server/server.js",
+    "test": "mocha test/server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ameerdow/babble.git"
+  },
+  "author": "Ameer Dow",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ameerdow/babble/issues"
+  },
+  "homepage": "https://github.com/ameerdow/babble#readme",
+  "dependencies": {
+    "express": "^4.16.2",
+    "md5": "^2.2.1",
+    "request": "^2.83.0"
+  }
+}
