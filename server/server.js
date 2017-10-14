@@ -8,7 +8,7 @@ var bodyParser = require('body-parser');
 // client side
 var app = express();
 app.use(express.static("./client"));
-app.listen(8090);
+app.listen(8080);
 console.log("client side port 8080");
 
 

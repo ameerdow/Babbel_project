@@ -55,7 +55,7 @@ nav {
 }
 
 .chat-status {
-    font-size: 20px;
+    font-size: 18px;
     line-height: 26px;
     margin: 0;
     height: 29px;
@@ -63,7 +63,7 @@ nav {
     right: 16px;
     top: 24px;
     white-space: nowrap;
-    width: 100px;
+    width: 120px;
 }
 
 .chat-status dt {
@@ -281,7 +281,7 @@ footer form > button {
 }
 
 .chat-message .content:hover, .chat-message .content:focus {
-    background-color: #f1f1f1;
+    background-color: #f1f1f1 !important;
 }
 
 .chat-message .msg-details {

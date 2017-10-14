@@ -43,7 +43,7 @@ function createMsgElement(msg) {
     row.setAttribute("class", "chat-message");
     row.setAttribute("msgId", msg.id);
     row.innerHTML = `<img width="40" height="40" alt="${msg.name === "" ? "Anonymous" : msg.name}" src="${"http://localhost:9000/gravatar/" + (msg.email === "" ? "1" : msg.email)}">`;
-    row.innerHTML += `<div class="content">
+    row.innerHTML += `<div class="content" tabindex="0">
 <div class="msg-details">
 <cite>${msg.name === "" ? "Anonymous" : msg.name}</cite>
 <time datetime="${new Date(msg.timestamp)}">${new Date(msg.timestamp).getHours() + ":" + new Date(msg.timestamp).getMinutes()}</time>
@@ -78,6 +78,7 @@ function submitNewMessage(event, element) {
             document.getElementById("chatMessages").append(createMsgElement(message));
         }
         document.querySelector(".chat-room main").scrollTop = document.querySelector(".chat-room main").scrollHeight;
+        refreshStats();
     });
 }
 
@@ -87,6 +88,7 @@ function deleteMessagePressed(msgId) {
         if (deletedDiv !== null) {
             deletedDiv.parentElement.removeChild(deletedDiv);
         }
+        refreshStats();
     }.bind(this));
 }
 
@@ -101,6 +103,7 @@ function loginAnonymously() {
     Babble.register({name: "", email: ""});
     document.getElementById("login").style.cssText = "display:none";
 }
+
 
 Babble.register = function (data) {
     new UserInfo(data.name, data.email).saveInStorage();
@@ -140,4 +143,43 @@ Babble.getStats = function (callback) {
     }, function (error) {
         console.error("Babble.getStats", "Error when trying to get stats", error);
     });
+};
+
+
+Babble.messages = [];
+
+
+function refreshStats() {
+    Babble.getStats(function (stats) {
+        stats = JSON.parse(stats);
+        document.getElementById("numberOfMessages").innerText = stats.messages + "";
+        document.getElementById("numberOfUsers").innerText = stats.users + "";
+    })
+}
+
+function getMessagesFromServer() {
+    Babble.getMessages(Babble.messages.length, function (messages) {
+        messages = JSON.parse(messages);
+        console.log(messages.length);
+        for (let i = 0; i < messages.length; i++) {
+            if (document.querySelector(`.chat-message[msgId="${messages[i].id}"]`) === null) {
+                document.getElementById("chatMessages").append(createMsgElement(messages[i]));
+            }
+        }
+        document.querySelector(".chat-room main").scrollTop = document.querySelector(".chat-room main").scrollHeight;
+        Babble.messages = Babble.messages.concat(messages);
+
+        refreshStats();
+        getMessagesFromServer();
+    })
+}
+
+window.onload = function () {
+    if (document.querySelector(".babble-body") === null) {
+        console.log("testing environment");
+        return
+    }
+
+    getMessagesFromServer();
+    refreshStats();
 };
